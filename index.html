@@ -51,6 +51,17 @@
 <body>
   <div id="app">
     
+      <canvas class="fireworks"></canvas>
+      <style>
+        .fireworks {
+          position: fixed;
+          left: 0;
+          top: 0;
+          z-index: 99999;
+          pointer-events: none;
+        }
+      </style>
+      
       
     <main class="content on">
       
@@ -172,6 +183,48 @@
     
     
     <article
+  id="post-CIFAIR-10分类"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+     
+    <div class="article-meta">
+      <a href="/2024/02/11/CIFAIR-10%E5%88%86%E7%B1%BB/" class="article-date">
+  <time datetime="2024-02-11T13:43:46.395Z" itemprop="datePublished">2024-02-11</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="CIFAIR-10分类"><a href="#CIFAIR-10分类" class="headerlink" title="CIFAIR-10分类"></a>CIFAIR-10分类</h2><h3 id="入门实战篇"><a href="#入门实战篇" class="headerlink" title="入门实战篇"></a>入门实战篇</h3><p>小试牛刀: CIFAR-10分类<br>下面我们来尝试实现对CIFAR-10数据集的分类，步骤如下：<br>1.使用torchvision加载并预处理CIFAR-10数据集<br>2.定义网络<br>3定义损失函数和优化器<br>4.训练网络并更新网络参数<br>5.测试网络    </p>
+<h3 id="数据预处理部分："><a href="#数据预处理部分：" class="headerlink" title="数据预处理部分："></a>数据预处理部分：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">import torchvision as tv</span><br><span class="line">import torchvision.transforms as transforms</span><br><span class="line">from torchvision.transforms import ToPILImage</span><br><span class="line">show = ToPILImage() # 可以把Tensor转成Image，方便可视化</span><br><span class="line">```   </span><br><span class="line">```commandline</span><br><span class="line"># 定义对数据的预处理</span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">        transforms.ToTensor(), # 转为Tensor</span><br><span class="line">        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), # 归一化</span><br><span class="line">                             ])</span><br><span class="line"></span><br><span class="line"># 训练集</span><br><span class="line">trainset = tv.datasets.CIFAR10(</span><br><span class="line">                    root=&#x27;/home/cy/tmp/data/&#x27;, </span><br><span class="line">                    train=True, </span><br><span class="line">                    download=True,</span><br><span class="line">                    transform=transform)</span><br><span class="line"></span><br><span class="line">trainloader = t.utils.data.DataLoader(</span><br><span class="line">                    trainset, </span><br><span class="line">                    batch_size=4,</span><br><span class="line">                    shuffle=True, </span><br><span class="line">                    num_workers=2)</span><br><span class="line"></span><br><span class="line"># 测试集</span><br><span class="line">testset = tv.datasets.CIFAR10(</span><br><span class="line">                    &#x27;/home/cy/tmp/data/&#x27;,</span><br><span class="line">                    train=False, </span><br><span class="line">                    download=True, </span><br><span class="line">                    transform=transform)</span><br><span class="line"></span><br><span class="line">testloader = t.utils.data.DataLoader(</span><br><span class="line">                    testset,</span><br><span class="line">                    batch_size=4, </span><br><span class="line">                    shuffle=False,</span><br><span class="line">                    num_workers=2)</span><br><span class="line"></span><br><span class="line">classes = (&#x27;plane&#x27;, &#x27;car&#x27;, &#x27;bird&#x27;, &#x27;cat&#x27;,</span><br><span class="line">           &#x27;deer&#x27;, &#x27;dog&#x27;, &#x27;frog&#x27;, &#x27;horse&#x27;, &#x27;ship&#x27;, &#x27;truck&#x27;)</span><br></pre></td></tr></table></figure>
+
+
+
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+   
+  
+</article>
+
+    
+    <article
   id="post-数据可视化"
   class="article article-type-post"
   itemscope
@@ -223,7 +276,9 @@ df1
 <img src="./image/result3.png"  alt="结果1" width="200" height="200" />
 ---
 #### 散点图：用于绘制A与B的关系
-利用scatter函数作图
+利用scatter函数作图：  
+
+
 
 
 
@@ -377,13 +432,13 @@ df1
   <div class="reward-box">
     
     <div class="reward-item">
-      <img class="reward-img" src="E:\myblog\blog\themes\ayer\images/alipay.png">
+      <img class="reward-img" src="/images/alipay.png">
       <span class="reward-type">支付宝</span>
     </div>
     
     
     <div class="reward-item">
-      <img class="reward-img" src="E:\myblog\blog\themes\ayer\images/wechat.png">
+      <img class="reward-img" src="/images/wechat.png">
       <span class="reward-type">微信</span>
     </div>
     
@@ -524,6 +579,10 @@ df1
 
 <!-- ClickBoom1 -->
 
+<script src="https://cdn.staticfile.org/animejs/3.2.1/anime.min.js"></script>
+
+<script src="/js/clickBoom1.js"></script>
+ 
 <!-- ClickBoom2 -->
 
 <!-- CodeCopy -->
@@ -585,7 +644,9 @@ df1
 </script>
  
 <!-- CanvasBackground -->
-
+ 
+<script src="/js/dz.js"></script>
+ 
 <script>
   if (window.mermaid) {
     mermaid.initialize({ theme: "forest" });
@@ -593,6 +654,23 @@ df1
 </script>
 
 
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=22707008&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
     
     
 
