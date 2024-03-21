@@ -13,7 +13,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>Archives |  hexo</title>
+      <title>prophet源码阅读 |  hexo</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -65,147 +65,196 @@
       
     <main class="content on">
       <section class="outer">
+  <article
+  id="post-prophet源码阅读"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  prophet源码阅读
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/03/21/prophet%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" class="article-date">
+  <time datetime="2024-03-21T02:58:50.000Z" itemprop="datePublished">2024-03-21</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">801</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">3 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
   
-  <ul class="ads">
-    
-        <li>
-            <a target="_blank" rel="noopener" href="https://curl.qcloud.com/kvO7hb43">
-                <img src="https://pic.imgdb.cn/item/62174b452ab3f51d912a5ccc.jpg" width="300" alt="云服务器限时秒杀">
-            </a>
-        </li>
-    
-        <li>
-            <a target="_blank" rel="noopener" href="https://www.vultr.com/?ref=8630075">
-                <img src="https://pic.imgdb.cn/item/62174b452ab3f51d912a5cd7.png" width="300" alt="vultr优惠vps">
-            </a>
-        </li>
-    
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-项目简介"><a href="#1-项目简介" class="headerlink" title="1.项目简介"></a><em>1.项目简介</em></h2><h3 id="1-1-prophet简介"><a href="#1-1-prophet简介" class="headerlink" title="1.1.prophet简介"></a><em>1.1.prophet简介</em></h3><p>prophet是由facebook开发的一款时间序列预测的工具，他具有以下的优缺点:  </p>
+<ul>
+<li><p>优点：<br>1.易用性高： Prophet 设计简单，易于上手，无需对时间序列预测领域有深入的专业知识，使得非专业人士也能够快速使用。    </p>
+<p>2.灵活性强： Prophet 提供了许多参数和选项，可以根据不同的数据特点和预测需求进行调整，灵活适应各种场景。</p>
+<p>3.自动化处理： Prophet 可以自动处理数据中的缺失值和异常值，自动检测并适应节假日效应，减轻了用户的预处理负担。<br>4，可解释性强： Prophet 的预测模型基于可解释性强的分解方式，能够直观地展示出趋势、季节性和假日效应等，便于用户理解和解释预测结果。  </p>
+</li>
+<li><p>缺点：<br>1.局限性： Prophet 的预测模型相对简单，无法处理一些复杂的时间序列模式和特征，例如非线性趋势、多重季节性等。</p>
+<p>2.性能问题： 对于大规模的时间序列数据，Prophet 可能会面临性能问题，模型拟合和预测的时间较长，不适用于实时或高频率的预测任务。</p>
+<p>3.不适用于所有场景： 由于其简单的模型结构和特性限制，Prophet 不适用于所有的时间序列预测问题，尤其是一些复杂的、高度非线性的场景。</p>
+</li>
 </ul>
-  
-  
-  <article class="articles">
-    
-    
-    <h1 class="page-type-title">Archives</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2024" class="archive-year">2024</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/03/21/prophet%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" class="archive-article-date">
-  <time datetime="2024-03-21T02:58:50.000Z" itemprop="datePublished">03/21</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/03/21/prophet%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"
-    >prophet源码阅读</a> 
-</h2>
+<h2 id="2-核心代码"><a href="#2-核心代码" class="headerlink" title="2.核心代码"></a><em>2.核心代码</em></h2><h3 id="2-1-数据处理"><a href="#2-1-数据处理" class="headerlink" title="2.1.数据处理"></a><em>2.1.数据处理</em></h3><ul>
+<li><p>数据读取主要是使用pandas库来读取   </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">pd.read_csv(path)</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>读取时序数据后，Prophet 在 forecaster.py 中的 _make_future_dataframe 函数中对输入数据进行了处理。  </p>
+</li>
+</ul>
+<h3 id="2-2-模型实例化模块"><a href="#2-2-模型实例化模块" class="headerlink" title="2.2.模型实例化模块"></a><em>2.2.模型实例化模块</em></h3><p>在forecaster.py模块中的Prophet类<br>实例化只需要调用  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">form prophet import Prophet</span><br><span class="line">m = Prophet()</span><br></pre></td></tr></table></figure>
+<p>以上两行代码就将prophet对象实例化给了m  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def __init__(</span><br><span class="line">            self,</span><br><span class="line">            growth=&#x27;linear&#x27;,</span><br><span class="line">            changepoints=None,</span><br><span class="line">            n_changepoints=25,</span><br><span class="line">            changepoint_range=0.8,</span><br><span class="line">            yearly_seasonality=&#x27;auto&#x27;,</span><br><span class="line">            weekly_seasonality=&#x27;auto&#x27;,</span><br><span class="line">            daily_seasonality=&#x27;auto&#x27;,</span><br><span class="line">            holidays=None,</span><br><span class="line">            seasonality_mode=&#x27;additive&#x27;,</span><br><span class="line">            seasonality_prior_scale=10.0,</span><br><span class="line">            holidays_prior_scale=10.0,</span><br><span class="line">            changepoint_prior_scale=0.05,</span><br><span class="line">            mcmc_samples=0,</span><br><span class="line">            interval_width=0.80,</span><br><span class="line">            uncertainty_samples=1000,</span><br><span class="line">            stan_backend=None,</span><br><span class="line">            scaling: str = &#x27;absmax&#x27;,</span><br><span class="line">            holidays_mode=None,</span><br><span class="line">    ):</span><br></pre></td></tr></table></figure>
+
+<p>由上方的Prophet类__init__()参数可以看到由很多可选参数  </p>
+<p>以下分析一些较为常见的参数设置：  </p>
+<ul>
+<li>growth：默认为linear，可选logistic和flat</li>
+<li>changepoints：可指定历史数据中哪天为changepoint</li>
+<li>n_changepoints:设置潜在变化点，默认为25</li>
+<li>changepoint_rangem：推断历史数据的前多少百分比，默认情况为0.8</li>
+<li>changepoint_prior_scale：设置趋势的灵活性，如果趋势变化是过拟合（灵活性过高）或拟合欠（灵活性不足），则可以使用输入参数调整稀疏先验的强度。默认情况下，此参数设置为 0.05</li>
+<li>yearly_seasonlity:默认为‘auto’，表示当历史数据大于一年时自动分析yearly的周期性变化</li>
+<li>weakly_seasonlity与daily_seasonlity同yearly_seasonlity</li>
+<li>holidays:属于外部影响因素，为Dataframe形式，可以为python内定的节假日也可以是自己指定的节假日</li>
+<li>seasonality_mode：表示预测结果是trend+seasonlity还是trend*seasonlity，大部分工业应用为乘法模式，prophet默认为加法模式</li>
+</ul>
  
-
-    </header>
-    
-    
-  </div>
-</article>
+      <!-- reward -->
       
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/02/21/visdom/" class="archive-article-date">
-  <time datetime="2024-02-21T15:01:05.000Z" itemprop="datePublished">02/21</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/02/21/visdom/"
-    >visdom</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/02/20/kaggle%E5%AE%9E%E6%88%981/" class="archive-article-date">
-  <time datetime="2024-02-20T11:22:58.000Z" itemprop="datePublished">02/20</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/02/20/kaggle%E5%AE%9E%E6%88%981/"
-    >Kaggle经典案例1</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/02/11/CIFAIR-10%E5%88%86%E7%B1%BB/" class="archive-article-date">
-  <time datetime="2024-02-11T13:43:46.395Z" itemprop="datePublished">02/11</time>
-</a>
-      
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2024/01/01/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" class="archive-article-date">
-  <time datetime="2024-01-01T11:22:58.000Z" itemprop="datePublished">01/01</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2024/01/01/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/"
-    >数据可视化</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
+      <div id="reword-out">
+        <div id="reward-btn">
+          Donate
+        </div>
+      </div>
       
     </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/2024/03/21/prophet%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
   </div>
-  
-  
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2024/02/21/visdom/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">visdom</div>
+      </a>
+    
+  </nav>
 
   
+   
+  
+   
+    <script src="https://cdn.staticfile.org/twikoo/1.4.18/twikoo.all.min.js"></script>
+    <div id="twikoo" class="twikoo"></div>
+    <script>
+        twikoo.init({
+            envId: ""
+        })
+    </script>
+ 
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -346,6 +395,22 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
 
 <script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
 <link

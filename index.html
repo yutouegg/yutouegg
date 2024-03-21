@@ -183,6 +183,141 @@
     
     
     <article
+  id="post-prophet源码阅读"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2024/03/21/prophet%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"
+    >prophet源码阅读</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/03/21/prophet%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/" class="article-date">
+  <time datetime="2024-03-21T02:58:50.000Z" itemprop="datePublished">2024-03-21</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1-项目简介"><a href="#1-项目简介" class="headerlink" title="1.项目简介"></a><em>1.项目简介</em></h2><h3 id="1-1-prophet简介"><a href="#1-1-prophet简介" class="headerlink" title="1.1.prophet简介"></a><em>1.1.prophet简介</em></h3><p>prophet是由facebook开发的一款时间序列预测的工具，他具有以下的优缺点:  </p>
+<ul>
+<li><p>优点：<br>1.易用性高： Prophet 设计简单，易于上手，无需对时间序列预测领域有深入的专业知识，使得非专业人士也能够快速使用。    </p>
+<p>2.灵活性强： Prophet 提供了许多参数和选项，可以根据不同的数据特点和预测需求进行调整，灵活适应各种场景。</p>
+<p>3.自动化处理： Prophet 可以自动处理数据中的缺失值和异常值，自动检测并适应节假日效应，减轻了用户的预处理负担。<br>4，可解释性强： Prophet 的预测模型基于可解释性强的分解方式，能够直观地展示出趋势、季节性和假日效应等，便于用户理解和解释预测结果。  </p>
+</li>
+<li><p>缺点：<br>1.局限性： Prophet 的预测模型相对简单，无法处理一些复杂的时间序列模式和特征，例如非线性趋势、多重季节性等。</p>
+<p>2.性能问题： 对于大规模的时间序列数据，Prophet 可能会面临性能问题，模型拟合和预测的时间较长，不适用于实时或高频率的预测任务。</p>
+<p>3.不适用于所有场景： 由于其简单的模型结构和特性限制，Prophet 不适用于所有的时间序列预测问题，尤其是一些复杂的、高度非线性的场景。</p>
+</li>
+</ul>
+<h2 id="2-核心代码"><a href="#2-核心代码" class="headerlink" title="2.核心代码"></a><em>2.核心代码</em></h2><h3 id="2-1-数据处理"><a href="#2-1-数据处理" class="headerlink" title="2.1.数据处理"></a><em>2.1.数据处理</em></h3><ul>
+<li><p>数据读取主要是使用pandas库来读取   </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">pd.read_csv(path)</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>读取时序数据后，Prophet 在 forecaster.py 中的 _make_future_dataframe 函数中对输入数据进行了处理。  </p>
+</li>
+</ul>
+<h3 id="2-2-模型实例化模块"><a href="#2-2-模型实例化模块" class="headerlink" title="2.2.模型实例化模块"></a><em>2.2.模型实例化模块</em></h3><p>在forecaster.py模块中的Prophet类<br>实例化只需要调用  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">form prophet import Prophet</span><br><span class="line">m = Prophet()</span><br></pre></td></tr></table></figure>
+<p>以上两行代码就将prophet对象实例化给了m  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def __init__(</span><br><span class="line">            self,</span><br><span class="line">            growth=&#x27;linear&#x27;,</span><br><span class="line">            changepoints=None,</span><br><span class="line">            n_changepoints=25,</span><br><span class="line">            changepoint_range=0.8,</span><br><span class="line">            yearly_seasonality=&#x27;auto&#x27;,</span><br><span class="line">            weekly_seasonality=&#x27;auto&#x27;,</span><br><span class="line">            daily_seasonality=&#x27;auto&#x27;,</span><br><span class="line">            holidays=None,</span><br><span class="line">            seasonality_mode=&#x27;additive&#x27;,</span><br><span class="line">            seasonality_prior_scale=10.0,</span><br><span class="line">            holidays_prior_scale=10.0,</span><br><span class="line">            changepoint_prior_scale=0.05,</span><br><span class="line">            mcmc_samples=0,</span><br><span class="line">            interval_width=0.80,</span><br><span class="line">            uncertainty_samples=1000,</span><br><span class="line">            stan_backend=None,</span><br><span class="line">            scaling: str = &#x27;absmax&#x27;,</span><br><span class="line">            holidays_mode=None,</span><br><span class="line">    ):</span><br></pre></td></tr></table></figure>
+
+<p>由上方的Prophet类__init__()参数可以看到由很多可选参数  </p>
+<p>以下分析一些较为常见的参数设置：  </p>
+<ul>
+<li>growth：默认为linear，可选logistic和flat</li>
+<li>changepoints：可指定历史数据中哪天为changepoint</li>
+<li>n_changepoints:设置潜在变化点，默认为25</li>
+<li>changepoint_rangem：推断历史数据的前多少百分比，默认情况为0.8</li>
+<li>changepoint_prior_scale：设置趋势的灵活性，如果趋势变化是过拟合（灵活性过高）或拟合欠（灵活性不足），则可以使用输入参数调整稀疏先验的强度。默认情况下，此参数设置为 0.05</li>
+<li>yearly_seasonlity:默认为‘auto’，表示当历史数据大于一年时自动分析yearly的周期性变化</li>
+<li>weakly_seasonlity与daily_seasonlity同yearly_seasonlity</li>
+<li>holidays:属于外部影响因素，为Dataframe形式，可以为python内定的节假日也可以是自己指定的节假日</li>
+<li>seasonality_mode：表示预测结果是trend+seasonlity还是trend*seasonlity，大部分工业应用为乘法模式，prophet默认为加法模式</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+    </footer>
+  </div>
+
+   
+   
+  
+</article>
+
+    
+    <article
+  id="post-visdom"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2024/02/21/visdom/"
+    >visdom</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/02/21/visdom/" class="article-date">
+  <time datetime="2024-02-21T15:01:05.000Z" itemprop="datePublished">2024-02-21</time>
+</a>    
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="visdom"><a href="#visdom" class="headerlink" title="visdom"></a><em>visdom</em></h2><p>在深度学习领域中，数据的可视化是非常重要的一个环节，visdom就是facebook开发专为pytorch定制的一个可视化工具</p>
+<h3 id="1-visdom的安装："><a href="#1-visdom的安装：" class="headerlink" title="1.visdom的安装："></a>1.visdom的安装：</h3><p>输入如下命令：  </p>
+<pre><code>pip install visdom
+</code></pre>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pytorch%EF%BC%8Cvisdom/" rel="tag">pytorch，visdom</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+   
+  
+</article>
+
+    
+    <article
   id="post-kaggle实战1"
   class="article article-type-post"
   itemscope
@@ -271,11 +406,17 @@
     <div class="article-entry" itemprop="articleBody">
        
   <h2 id="CIFAIR-10分类"><a href="#CIFAIR-10分类" class="headerlink" title="CIFAIR-10分类"></a>CIFAIR-10分类</h2><h3 id="入门实战篇"><a href="#入门实战篇" class="headerlink" title="入门实战篇"></a>入门实战篇</h3><p>小试牛刀: CIFAR-10分类<br>下面我们来尝试实现对CIFAR-10数据集的分类，步骤如下：<br>1.使用torchvision加载并预处理CIFAR-10数据集<br>2.定义网络<br>3定义损失函数和优化器<br>4.训练网络并更新网络参数<br>5.测试网络    </p>
-<h3 id="数据预处理部分："><a href="#数据预处理部分：" class="headerlink" title="数据预处理部分："></a>数据预处理部分：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">import torchvision as tv</span><br><span class="line">import torchvision.transforms as transforms</span><br><span class="line">from torchvision.transforms import ToPILImage</span><br><span class="line">show = ToPILImage() # 可以把Tensor转成Image，方便可视化</span><br><span class="line">```   </span><br><span class="line">```commandline</span><br><span class="line"># 定义对数据的预处理</span><br><span class="line">transform = transforms.Compose([</span><br><span class="line">        transforms.ToTensor(), # 转为Tensor</span><br><span class="line">        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), # 归一化</span><br><span class="line">                             ])</span><br><span class="line"></span><br><span class="line"># 训练集</span><br><span class="line">trainset = tv.datasets.CIFAR10(</span><br><span class="line">                    root=&#x27;/home/cy/tmp/data/&#x27;, </span><br><span class="line">                    train=True, </span><br><span class="line">                    download=True,</span><br><span class="line">                    transform=transform)</span><br><span class="line"></span><br><span class="line">trainloader = t.utils.data.DataLoader(</span><br><span class="line">                    trainset, </span><br><span class="line">                    batch_size=4,</span><br><span class="line">                    shuffle=True, </span><br><span class="line">                    num_workers=2)</span><br><span class="line"></span><br><span class="line"># 测试集</span><br><span class="line">testset = tv.datasets.CIFAR10(</span><br><span class="line">                    &#x27;/home/cy/tmp/data/&#x27;,</span><br><span class="line">                    train=False, </span><br><span class="line">                    download=True, </span><br><span class="line">                    transform=transform)</span><br><span class="line"></span><br><span class="line">testloader = t.utils.data.DataLoader(</span><br><span class="line">                    testset,</span><br><span class="line">                    batch_size=4, </span><br><span class="line">                    shuffle=False,</span><br><span class="line">                    num_workers=2)</span><br><span class="line"></span><br><span class="line">classes = (&#x27;plane&#x27;, &#x27;car&#x27;, &#x27;bird&#x27;, &#x27;cat&#x27;,</span><br><span class="line">           &#x27;deer&#x27;, &#x27;dog&#x27;, &#x27;frog&#x27;, &#x27;horse&#x27;, &#x27;ship&#x27;, &#x27;truck&#x27;)</span><br></pre></td></tr></table></figure>
+<h3 id="数据预处理部分："><a href="#数据预处理部分：" class="headerlink" title="数据预处理部分："></a>数据预处理部分：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import torchvision as tv</span><br><span class="line">import torchvision.transforms as transforms</span><br><span class="line">from torchvision.transforms import ToPILImage</span><br><span class="line">show = ToPILImage() # 可以把Tensor转成Image，方便可视化</span><br><span class="line">```   </span><br><span class="line">commandline</span><br><span class="line"></span><br><span class="line"># 定义对数据的预处理</span><br><span class="line">&lt;details&gt;</span><br><span class="line">&lt;summary&gt;点击展开/和并代码&lt;/summary&gt;</span><br></pre></td></tr></table></figure>
+<p>transform = transforms.Compose([<br>        transforms.ToTensor(), # 转为Tensor<br>        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), # 归一化<br>                             ])</p>
+<h1 id="训练集"><a href="#训练集" class="headerlink" title="训练集"></a>训练集</h1><p>trainset = tv.datasets.CIFAR10(<br>                    root=’/home/cy/tmp/data/‘,<br>                    train=True,<br>                    download=True,<br>                    transform=transform)</p>
+<p>trainloader = t.utils.data.DataLoader(<br>                    trainset,<br>                    batch_size=4,<br>                    shuffle=True,<br>                    num_workers=2)</p>
+<h1 id="测试集"><a href="#测试集" class="headerlink" title="测试集"></a>测试集</h1><p>testset = tv.datasets.CIFAR10(<br>                    ‘/home/cy/tmp/data/‘,<br>                    train=False,<br>                    download=True,<br>                    transform=transform)</p>
+<p>testloader = t.utils.data.DataLoader(<br>                    testset,<br>                    batch_size=4,<br>                    shuffle=False,<br>                    num_workers=2)</p>
+<p>classes = (‘plane’, ‘car’, ‘bird’, ‘cat’,<br>           ‘deer’, ‘dog’, ‘frog’, ‘horse’, ‘ship’, ‘truck’)</p>
+<pre><code>
+&lt;/details&gt;
 
-
-
-
+</code></pre>
  
       <!-- reward -->
       
