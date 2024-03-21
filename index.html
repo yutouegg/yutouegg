@@ -243,8 +243,27 @@
 <li>yearly_seasonlity:默认为‘auto’，表示当历史数据大于一年时自动分析yearly的周期性变化</li>
 <li>weakly_seasonlity与daily_seasonlity同yearly_seasonlity</li>
 <li>holidays:属于外部影响因素，为Dataframe形式，可以为python内定的节假日也可以是自己指定的节假日</li>
-<li>seasonality_mode：表示预测结果是trend+seasonlity还是trend*seasonlity，大部分工业应用为乘法模式，prophet默认为加法模式</li>
+<li>seasonality_mode：表示预测结果是trend+seasonlity还是trend*seasonlity，大部分工业应用为乘法模式，prophet默认为加法模式  </li>
 </ul>
+<h4 id="Prophet类中一些常用的函数："><a href="#Prophet类中一些常用的函数：" class="headerlink" title="Prophet类中一些常用的函数："></a>Prophet类中一些常用的函数：</h4><ul>
+<li><p>def add_country_holidays(self, country_name):<br>这是prophet中加入内置节假日的函数,使用方法如下： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">m = Prophet(holidays=holidays)</span><br><span class="line">m.add_country_holidays(country_name=&#x27;US&#x27;)</span><br><span class="line">m.fit(df)</span><br><span class="line">forecast = m.predict(future</span><br></pre></td></tr></table></figure></li>
+<li><p>def add_seasonality(self, name, period, fourier_order, prior_scale=None,</p>
+<pre><code>                  mode=None, condition_name=None):
+</code></pre>
+</li>
+</ul>
+<p>自定义周期函数：<br>不同与一个月，一周，一年的周期，可以自定义多久时间来分析周期变化</p>
+<ul>
+<li>def add_regressor(self, name, prior_scale=None, standardize=’auto’,<pre><code>                mode=None):  
+</code></pre>
+添加自定义外部影响的函数</li>
+</ul>
+<h3 id="2-3-模型训练"><a href="#2-3-模型训练" class="headerlink" title="2.3.模型训练"></a>2.3.模型训练</h3><p>prophet训练模型类似于sklearn，forester.py中fit函数进行模型的训练：<br> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m.fit(ds) #训练模型</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-3-模型预测"><a href="#2-3-模型预测" class="headerlink" title="2.3.模型预测"></a>2.3.模型预测</h3><p>prophet的预测也相似于sklearn，依靠forester.py中的predic函数</p>
+<pre><code class="commandline">    forecast = m.predict(future)
+</code></pre>
+<h3 id="2-4-可视化模块"><a href="#2-4-可视化模块" class="headerlink" title="2.4.可视化模块"></a>2.4.可视化模块</h3><p>  prophet的可视化主要依靠ploy.py包，在plot.py中，Prophet提供了一系列绘图函数，如plot、plot_components等，用于绘制预测结果图和各个组成部分的图   </p>
  
       <!-- reward -->
       
