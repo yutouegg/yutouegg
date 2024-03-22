@@ -93,7 +93,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">1k</span>
+            <span class="post-count">1.1k</span>
         </span>
     </span>
 
@@ -168,9 +168,11 @@
 </ul>
 <h3 id="2-3-模型训练"><a href="#2-3-模型训练" class="headerlink" title="2.3.模型训练"></a>2.3.模型训练</h3><p>prophet训练模型类似于sklearn，forester.py中fit函数进行模型的训练：<br> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m.fit(ds) #训练模型</span><br></pre></td></tr></table></figure></p>
 <h3 id="2-3-模型预测"><a href="#2-3-模型预测" class="headerlink" title="2.3.模型预测"></a>2.3.模型预测</h3><p>prophet的预测也相似于sklearn，依靠forester.py中的predic函数</p>
-<pre><code class="commandline">    forecast = m.predict(future)
-</code></pre>
-<h3 id="2-4-可视化模块"><a href="#2-4-可视化模块" class="headerlink" title="2.4.可视化模块"></a>2.4.可视化模块</h3><p>  prophet的可视化主要依靠ploy.py包，在plot.py中，Prophet提供了一系列绘图函数，如plot、plot_components等，用于绘制预测结果图和各个组成部分的图   </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    forecast = m.predict(future)</span><br><span class="line">```  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">### 2.4.可视化模块</span><br><span class="line">  prophet的可视化主要依靠ploy.py包，在plot.py中，Prophet提供了一系列绘图函数，如plot、plot_components等，用于绘制预测结果图和各个组成部分的图   </span><br><span class="line">```commandline</span><br><span class="line">    m.plot(forecast)</span><br></pre></td></tr></table></figure>
+<p> 通过以上代码可以显示出预测结果的可视化，如下所示：<br><img src="./image/plot.png" alt="plot">  </p>
+<p>通过以下代码可得预测各部分(趋势和周期性）的可视化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m.plot_compoents(forecast)</span><br></pre></td></tr></table></figure>
+<p><img src="./image/compoents.png" alt="compoens"></p>
  
       <!-- reward -->
       
