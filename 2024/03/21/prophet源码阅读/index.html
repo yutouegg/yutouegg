@@ -166,9 +166,11 @@
 </code></pre>
 添加自定义外部影响的函数</li>
 </ul>
-<h3 id="2-3-模型训练"><a href="#2-3-模型训练" class="headerlink" title="2.3.模型训练"></a>2.3.模型训练</h3><p>prophet训练模型类似于sklearn，forester.py中fit函数进行模型的训练：<br> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">m.fit(ds) #训练模型</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-3-模型训练"><a href="#2-3-模型训练" class="headerlink" title="2.3.模型训练"></a>2.3.模型训练</h3><p>prophet训练模型类似于sklearn，forester.py中fit函数进行模型的训练：</p>
+<pre><code>m.fit(ds) #训练模型
+</code></pre>
 <h3 id="2-4-模型预测"><a href="#2-4-模型预测" class="headerlink" title="2.4.模型预测"></a>2.4.模型预测</h3><p>prophet的预测也相似于sklearn，依靠forester.py中的predic函数</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">    forecast = m.predict(future)</span><br><span class="line">```  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">### 2.5.可视化模块</span><br><span class="line">  prophet的可视化也很方便包，在Prophet类中有plot、plot_components函数，用于绘制预测结果图和各个组成部分的图：  </span><br><span class="line">```commandline</span><br><span class="line">    m.plot(forecast)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    forecast = m.predict(future)</span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">### 2.5.可视化模块</span><br><span class="line">  prophet的可视化也很方便包，在Prophet类中有plot、plot_components函数，用于绘制预测结果图和各个组成部分的图：  </span><br><span class="line">```commandline</span><br><span class="line">    m.plot(forecast)</span><br></pre></td></tr></table></figure>
 <p> 通过以上代码可以显示出预测结果的可视化，如下所示：  </p>
 <p><img src="../image/plot.png" alt="plot">  </p>
 <p>通过以下代码可得预测各部分(趋势和周期性）的可视化：</p>
